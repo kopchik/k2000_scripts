@@ -1,0 +1,11 @@
+# main deps
+pyserial==3.5
+click==8.0.0
+matplotlib==3.4.2
+pandas==1.2.4
+
+# dev deps
+ipython==7.23.1
+black==21.5b1
+isort==5.8.0
+pdbpp==0.10.2
