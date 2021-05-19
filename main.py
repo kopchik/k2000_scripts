@@ -38,14 +38,15 @@ def query(query, echo=True, response=True, to_float=False):
         return resp
 
 
-def init():
+def init(keep_display_off=True):
     data = query("*IDN?\r\n")
     assert "KEITHLEY" in data, "IDN failed"
     query(":CONF:VOLT:DC", response=False)
     query(":SENS:VOLT:NPLC 10", response=False)
     query(":CONF?")
     query(":DISP:ENAB 0", response=False)
-    atexit.register(lambda: query(":DISP:ENAB 1", response=False))
+    if not keep_display_off:
+        atexit.register(lambda: query(":DISP:ENAB 1", response=False))
 
 
 def read_data(echo=False):
@@ -60,18 +61,17 @@ def wait_til_next_tick(step=1, extra=-0.0005):
     prev_tick = int(now) // step * step
     next_tick = prev_tick + step
     to_wait = next_tick - now + extra
-    # print(f"now is {now}")
     assert to_wait <= step, f"I should not wait {to_wait}"
-    # print(f"I need to sleep {to_wait:.3f}")
     if to_wait > 0:
         time.sleep(to_wait)
     print(datetime.now())
 
 
 @click.command()
-@click.option("-p", "--period", type=int, default=5)
+@click.option("-p", "--period", type=int, default=5, show_default=True)
+@click.option("-k", "--keep-display-off", type=bool, default=True, show_default=True)
 @click.argument("output", type=click.Path(exists=False, file_okay=True))
-def main(output, period):
+def main(output, period, keep_display_off):
     if os.path.exists(output):
         print(f'output file "{output}" already exists!', file=sys.stderr)
         raise click.Abort()
