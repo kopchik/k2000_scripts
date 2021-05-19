@@ -26,9 +26,7 @@ def main(input, skip_rows, skip_footer, annotate, ylim):
     )
     # df = df[df.voltage > 2.3][ df.voltage < 2.5001]
     output_file = Path(input).stem + ".png"
-    plt = df.set_index("time").plot(
-        figsize=(20, 10),
-        x_compat=True)
+    plt = df.set_index("time").plot(figsize=(20, 10), x_compat=True)
     # plt.xaxis.set_major_locator(mdates.MinuteLocator(interval=10))
 
     if ylim:
@@ -39,11 +37,12 @@ def main(input, skip_rows, skip_footer, annotate, ylim):
         for i, row in df.iterrows():
             raw_x = str(row[0])
             if ts in raw_x:
-                plt.annotate(text,
-                             xy=(row[0], row[1]),
-                             xycoords='data',
-                             arrowprops=dict(facecolor='black', shrink=1),
-                             )
+                plt.annotate(
+                    text,
+                    xy=(row[0], row[1]),
+                    xycoords="data",
+                    arrowprops=dict(facecolor="black", shrink=1),
+                )
                 break
 
     plt.figure.savefig(output_file)
